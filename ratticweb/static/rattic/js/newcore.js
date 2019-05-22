@@ -1,4 +1,4 @@
-var RATTIC = (function ($, ZeroClipboard) {
+var RATTIC = (function ($) {
   var my = {
     api: {},
     controls: {},
@@ -60,9 +60,6 @@ var RATTIC = (function ($, ZeroClipboard) {
   my.page.getStaticURL = function (file) {
     return my.page.getMetaInfo('url_root') + 'static/' + file;
   };
-
-  /* Setup ZeroClipboard */
-  ZeroClipboard.config({ moviePath: my.page.getStaticURL('zeroclipboard/1.3.2/ZeroClipboard.swf') });
 
   /********* Private Methods **********/
   /* Gets a cookie from the browser. Only works for cookies that
@@ -267,47 +264,6 @@ var RATTIC = (function ($, ZeroClipboard) {
         },
         function () {}
       );
-  }
-
-  function _setVisibility(item, state) {
-    if (state == true) {
-      state = 'visible';
-    }
-    if (state == false) {
-      state = 'hidden';
-    }
-    $(item).css({visibility: state});
-  }
-
-  function _hideCopyButton() {
-    var me = $(this),
-      button = $($(me).data('copybutton')),
-      hideTimeoutId = window.setTimeout(_hideCopyButtonTimer.bind(undefined, button), 250);
-    button.data('hideTimeoutId', hideTimeoutId);
-  }
-
-  function _hideCopyButtonTimer(button) {
-    _setVisibility(button, false);
-    button.data('hideTimeoutId', -1);
-  }
-
-  function _showCopyButton() {
-    var button = $($(this).data('copybutton')),
-      target = $(button.data('copyfrom')),
-      hideTimeoutId = button.data('hideTimeoutId'),
-      clip = button.data('clip');
-
-    if (typeof button.data('hideTimeoutId') === "undefined") {
-      button.data('hideTimeoutId', -1);
-    }
-
-    if (hideTimeoutId != -1) {
-      window.clearTimeout(hideTimeoutId);
-      button.data('hideTimeoutId', -1);
-    }
-
-    target.trigger('getdatasync');
-    _setVisibility(button, true);
   }
 
   function _copyButtonGetData(client) {
@@ -608,16 +564,12 @@ var RATTIC = (function ($, ZeroClipboard) {
 
   /* Add copy buttons to table cells */
   my.controls.tableCopyButtons = function (cells) {
-    if (!FlashDetect.installed) {
-      return false;
-    }
-
     cells.each(function () {
       // Get the players
       var me = $(this),
         button = me.children('button'),
         text = me.children('span'),
-        clip = new ZeroClipboard(button);
+        clip = null;
 
       // Set data for callbacks
       button.data('copyfrom', text);
@@ -627,10 +579,17 @@ var RATTIC = (function ($, ZeroClipboard) {
       text.data('copybutton', button);
 
       // Apply callbacks
-      me.on('mouseleave', _hideCopyButton);
-      text.on('mouseover', _showCopyButton);
-      clip.on('mouseover', _showCopyButton);
-      clip.on('dataRequested', _copyButtonGetData);
+      button.on('click', function(event) {
+        var fakeClient = {
+          setText: function(text) {
+            copyText(text);
+          }
+        }, target = $(me.data('copyfrom'));
+
+        _copyButtonGetData.call(this, fakeClient);
+
+        event.preventDefault();
+      });
     });
 
     return true;
@@ -715,7 +674,7 @@ var RATTIC = (function ($, ZeroClipboard) {
     });
   };
   return my;
-}(jQuery, ZeroClipboard));
+}(jQuery));
 
 $(document).ready(function () {
   // Setup Icons
@@ -780,3 +739,33 @@ $(document).ready(function () {
   sjcl.random.startCollectors();
 });
 
+// Responsible for enabling copy to clipboard without flash
+var copyNode, copyText, createNode;
+
+createNode = function(text) {
+  var node;
+  node = document.createElement('span');
+  node.style.position = 'absolute';
+  node.style.left = '-10000px';
+  node.textContent = text;
+  return node;
+};
+
+copyNode = function(node) {
+  var range, selection;
+  selection = getSelection();
+  selection.removeAllRanges();
+  range = document.createRange();
+  range.selectNodeContents(node);
+  selection.addRange(range);
+  document.execCommand('copy');
+  return selection.removeAllRanges();
+};
+
+copyText = function(text) {
+  var node;
+  node = createNode(text);
+  document.body.appendChild(node);
+  copyNode(node);
+  return document.body.removeChild(node);
+};
