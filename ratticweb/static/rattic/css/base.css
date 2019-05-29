@@ -59,7 +59,7 @@ button#copyuser {
 
 
 button#copyclipboard {
-  visibility: hidden;
+  visibility: visible;
 }
 
 a#hidepass {
