@@ -145,4 +145,9 @@ body {
     .table-responsive-fifth-column thead th:nth-child(5){display: none;}
 }
 
-
+.crop {
+    width:30em;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden;
+}
