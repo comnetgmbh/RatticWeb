@@ -37,7 +37,7 @@
           <button class="btn disabled rattic-check-enabled rattic-form-submit" data-target=".cred-list-check" data-action="{% url "cred.views.bulkaddtoqueue" %}">{% trans "Add to Change Queue" %}</button>
         {% endif %}
         {% if buttons.tagger %}
-		<select name="tag" class="rattic-single-tag-selector rattic-check-enabled" data-target=".cred-list-check" placeholder="{% trans "Apply a Tag" %}" data-action="{% url "cred.views.bulktagcred" %}" tabindex="-1"></select>
+              <select name="tag" class="rattic-single-tag-selector rattic-check-enabled" data-target=".cred-list-check" placeholder="{% trans "Apply a Tag" %}" data-action="{% url "cred.views.bulktagcred" %}" tabindex="-1"></select>
         {% endif %}
         {% if buttons.export and EXPORT_ENABLED %}
           <button class="btn" href="#exportmodal" data-toggle="modal">{% trans "Download Keepass" %}</button>
@@ -72,8 +72,10 @@
       <th>
         {% trans "Viewer Groups" %}
       </th>
-      <th>{% trans "Tags" %}</th>
-    </tr>
+     <th>{% trans "Description" %}</th>
+     <th>{% trans "Tags" %}</th>
+
+  </tr>
   </thead>
   <tbody>
     {% for c in credlist %}
@@ -89,6 +91,7 @@
             {% else %}{{ g.name }}{% endif %}{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </td>
+      <td><div class="crop">{{ c.description }}</div></td>
       <td>{% for t in c.tags.all %}{% if not forloop.first %}, {% endif %}<a href="{% url "cred.views.list" "tag" t.id %}">{{ t.name }}</a>{% endfor %}</td>
     </tr>
     {% endfor %}
@@ -125,4 +128,3 @@
 {% include "cred_taglist.html" with tags=tag only %}
 {% endif %}
 {% endblock %}
-
