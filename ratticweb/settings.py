@@ -161,12 +161,12 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
-    'south',
+ #   'south',
     'tastypie',
     'kombu.transport.django',
     'djcelery',
     'database_files',
-    'social_auth',
+ #   'social_auth',
 ) + LOCAL_APPS
 
 if os.environ.get("ENABLE_TESTS") == "1":

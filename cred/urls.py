@@ -1,44 +1,45 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.conf import settings
+import views
 
-urlpatterns = patterns('cred.views',
+urlpatterns = [
     # New list views
-    url(r'^list/$', 'list'),
-    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/$', 'list'),
-    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/$', 'list'),
-    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/page-(?P<page>\d+)/$', 'list'),
+    url(r'^list/$',views.list,name= 'list'),
+    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/$',views.list,name='list'),
+    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/$',views.list,name='list'),
+    url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/page-(?P<page>\d+)/$',views.list,name='list'),
 
     # Search dialog for mobile
-    url(r'^search/$', 'search'),
+    url(r'^search/$',views.search,name='search'),
 
     # Single cred views
-    url(r'^detail/(?P<cred_id>\d+)/$', 'detail'),
-    url(r'^detail/(?P<cred_id>\d+)/fingerprint/$', 'ssh_key_fingerprint'),
-    url(r'^detail/(?P<cred_id>\d+)/download/$', 'downloadattachment'),
-    url(r'^detail/(?P<cred_id>\d+)/ssh_key/$', 'downloadsshkey'),
-    url(r'^edit/(?P<cred_id>\d+)/$', 'edit'),
-    url(r'^delete/(?P<cred_id>\d+)/$', 'delete'),
-    url(r'^add/$', 'add'),
+    url(r'^detail/(?P<cred_id>\d+)/$',views.detail,name= 'detail'),
+    url(r'^detail/(?P<cred_id>\d+)/fingerprint/$',views.ssh_key_fingerprint,name= 'ssh_key_fingerprint'),
+    url(r'^detail/(?P<cred_id>\d+)/download/$',views.downloadattachment,name= 'downloadattachment'),
+    url(r'^detail/(?P<cred_id>\d+)/ssh_key/$',views.downloadsshkey,name= 'downloadsshkey'),
+    url(r'^edit/(?P<cred_id>\d+)/$',views.edit,name= 'edit'),
+    url(r'^delete/(?P<cred_id>\d+)/$',views.delete,name= 'delete'),
+    url(r'^add/$',views.add,name= 'add'),
 
     # Adding to the change queue
-    url(r'^addtoqueue/(?P<cred_id>\d+)/$', 'addtoqueue'),
+    url(r'^addtoqueue/(?P<cred_id>\d+)/$',views.addtoqueue,name= 'addtoqueue'),
 
     # Bulk views (for buttons on list page)
-    url(r'^addtoqueue/bulk/$', 'bulkaddtoqueue'),
-    url(r'^delete/bulk/$', 'bulkdelete'),
-    url(r'^undelete/bulk/$', 'bulkundelete'),
-    url(r'^addtag/bulk/$', 'bulktagcred'),
+    url(r'^addtoqueue/bulk/$',views.bulkaddtoqueue,name= 'bulkaddtoqueue'),
+    url(r'^delete/bulk/$',views.bulkdelete,name= 'bulkdelete'),
+    url(r'^undelete/bulk/$',views.bulkundelete,name= 'bulkundelete'),
+    url(r'^addtag/bulk/$',views.bulktagcred,name= 'bulktagcred'),
 
     # Tags
-    url(r'^tag/$', 'tags'),
-    url(r'^tag/add/$', 'tagadd'),
-    url(r'^tag/edit/(?P<tag_id>\d+)/$', 'tagedit'),
-    url(r'^tag/delete/(?P<tag_id>\d+)/$', 'tagdelete'),
-)
+    url(r'^tag/$',views.tags, name= 'tags'),
+    url(r'^tag/add/$',views.tagadd, name= 'tagadd'),
+    url(r'^tag/edit/(?P<tag_id>\d+)/$',views.tagedit, name= 'tagedit'),
+    url(r'^tag/delete/(?P<tag_id>\d+)/$',views.tagdelete,name= 'tagdelete'),
+]
 
 if not settings.RATTIC_DISABLE_EXPORT:
-    urlpatterns += patterns('cred.views',
+    urlpatterns += [
         # Export views
-        url(r'^export.kdb$', 'download'),
-        url(r'^export-by-(?P<cfilter>\w+)/(?P<value>[^/]*).kdb$', 'download'),
-    )
+        url(r'^export.kdb$',views.download, name= 'download'),
+        url(r'^export-by-(?P<cfilter>\w+)/(?P<value>[^/]*).kdb$',views.download,name= 'download'),
+    ]
