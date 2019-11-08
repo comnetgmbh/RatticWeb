@@ -1,11 +1,12 @@
 from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.auth.views import PasswordResetView
 from tastypie.api import Api
 from cred.api import CredResource, TagResource
 from staff.api import GroupResource
 from django.conf import settings
 from views import home
-import views
+
 
 # Configure the error handlers
 handler500 = 'ratticweb.views.handle500'
@@ -20,11 +21,15 @@ v1_api.register(GroupResource())
 # Setup the base paths for applications, and the API
 urlpatterns = [
     # Apps:
-    url(r'^$', home, name='home'),
+    url('', home, name='home'),
     url(r'^account/', include('account.urls')),
     url(r'^cred/', include('cred.urls')),
     url(r'^staff/', include('staff.urls')),
     url(r'^help/', include('help.urls')),
+
+    #PasswordResetView
+
+    url('password_reset/', PasswordResetView.as_view(), name='password_reset'),
 
     # API
     url(r'^api/', include(v1_api.urls)),
