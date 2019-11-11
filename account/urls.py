@@ -1,10 +1,10 @@
 from django.conf.urls import include, url
 from django.conf import settings
 
-from views import profile, newapikey, deleteapikey, RatticSessionDeleteView
-from views import RatticTFADisableView, RatticTFABackupTokensView
-from views import RatticTFASetupView, RatticTFALoginView
-from views import RatticTFAGenerateApiKey
+from .views import profile, newapikey, deleteapikey, RatticSessionDeleteView
+from .views import RatticTFADisableView, RatticTFABackupTokensView
+from .views import RatticTFASetupView, RatticTFALoginView
+from .views import RatticTFAGenerateApiKey
 
 from two_factor.views import QRGeneratorView
 

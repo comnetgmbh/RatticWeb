@@ -1,4 +1,5 @@
 from database_files.storage import DatabaseStorage
+from django.core.files.storage import Storage
 
 
 class CredAttachmentStorage(DatabaseStorage):

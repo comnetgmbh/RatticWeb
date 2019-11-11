@@ -17,8 +17,8 @@ from django.utils.timezone import utc
 from cred.icon import get_icon_list
 from cred.models import CredAudit, Cred, Tag
 from cred.forms import CredForm
-from models import UserForm, GroupForm, KeepassImportForm, AuditFilterForm
-from decorators import rattic_staff_required
+from .models import UserForm, GroupForm, KeepassImportForm, AuditFilterForm
+from .decorators import rattic_staff_required
 
 
 @rattic_staff_required

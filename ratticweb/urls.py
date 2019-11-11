@@ -5,7 +5,7 @@ from tastypie.api import Api
 from cred.api import CredResource, TagResource
 from staff.api import GroupResource
 from django.conf import settings
-from views import home
+from .views import home
 
 
 # Configure the error handlers

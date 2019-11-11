@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.conf import settings
-from views import NewUser, UpdateUser
-import views
+from .views import NewUser, UpdateUser
+from . import views
 
 urlpatterns = [
     # Views in views.py

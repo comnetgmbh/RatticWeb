@@ -14,8 +14,8 @@
 #
 # GitHub: https://github.com/tildaslash/RatticWeb
 #
-from ConfigParser import RawConfigParser, NoOptionError
-from urlparse import urljoin
+from configparser import RawConfigParser, NoOptionError
+from urllib.parse import urljoin
 import ldap
 import os
 from django_auth_ldap.config import LDAPSearch

@@ -8,9 +8,10 @@ from django.utils.timezone import now
 from django.conf import settings
 
 from ratticweb.util import DictDiffer, field_file_compare
-from ssh_key import SSHKey
-from fields import SizedFileField
-from storage import CredAttachmentStorage
+from .ssh_key import SSHKey
+from .fields import SizedFileField
+from .storage import CredAttachmentStorage
+
 
 
 class Tag(models.Model):

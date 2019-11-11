@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from account.models import ApiKey, ApiKeyForm
-from models import UserProfileForm, LDAPPassChangeForm
+from .models import UserProfileForm, LDAPPassChangeForm
 
 from django.views.decorators.debug import sensitive_post_parameters
 from django.contrib.auth.decorators import login_required
@@ -22,7 +22,7 @@ import uuid
 
 @login_required
 def rattic_change_password(request, *args, **kwargs):
-    print request.user
+    print(request.user)
     if request.user.has_usable_password():
         # If a user is changing their password
         return password_change(request, *args, **kwargs)
