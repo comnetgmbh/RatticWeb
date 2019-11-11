@@ -21,6 +21,10 @@ import os
 from django_auth_ldap.config import LDAPSearch
 from datetime import timedelta
 from django.utils.translation import ugettext_lazy as _
+import os
+from django import core
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = RawConfigParser()
 config.readfp(open('conf/defaults.cfg'))
@@ -74,17 +78,17 @@ STATICFILES_DIRS = (
 # RequestContext. These callables take a request object as their
 # argument and return a dictionary of items to be merged into
 # the context.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    'ratticweb.context_processors.base_template_reqs',
-    'ratticweb.context_processors.logo_selector',
-)
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     "django.contrib.auth.context_processors.auth",
+#     "django.core.context_processors.debug",
+#     "django.core.context_processors.i18n",
+#     "django.core.context_processors.media",
+#     "django.core.context_processors.static",
+#     "django.core.context_processors.tz",
+#     "django.contrib.messages.context_processors.messages",
+#     'ratticweb.context_processors.base_template_reqs',
+#     'ratticweb.context_processors.logo_selector',
+# )
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -95,11 +99,29 @@ STATICFILES_FINDERS = (
 )
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    # 'django.template.loaders.eggs.Loader',
-)
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+#     # 'django.template.loaders.eggs.Loader',
+# )
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Already defined Django-related contexts here
+
+                # `allauth` needs this from django
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+            ],
+        },
+    },
+]
+
 
 MIDDLEWARE_CLASSES = (
     'user_sessions.middleware.SessionMiddleware',
@@ -257,7 +279,7 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 # [ratticweb]
 DEBUG = confgetbool('ratticweb', 'debug', False)
-TEMPLATE_DEBUG = DEBUG
+# TEMPLATE_DEBUG = DEBUG
 TIME_ZONE = config.get('ratticweb', 'timezone')
 SECRET_KEY = config.get('ratticweb', 'secretkey')
 ALLOWED_HOSTS = [config.get('ratticweb', 'hostname'), 'localhost']
