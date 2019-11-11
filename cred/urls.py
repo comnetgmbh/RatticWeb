@@ -4,7 +4,7 @@ import views
 
 urlpatterns = [
     # New list views
-    url(r'^list/$',views.list,name= 'list'),
+    url('list/',views.list,name= 'list'),
     url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/$',views.list,name='list'),
     url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/$',views.list,name='list'),
     url(r'^list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/page-(?P<page>\d+)/$',views.list,name='list'),

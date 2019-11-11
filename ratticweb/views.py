@@ -7,7 +7,7 @@ def home(request):
         return redirect(reverse('cred.views.list'))
     else:
         nextpage = request.GET.get('next', '')
-        return render(request, 'home.html', {'next': nextpage})
+        return render(request, 'home.html',{'next':nextpage})
 
 
 def handle500(request):
