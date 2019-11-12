@@ -1,9 +1,9 @@
 from django.shortcuts import redirect, render
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 def home(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(reverse('cred.views.list'))
     else:
         nextpage = request.GET.get('next', '')
@@ -14,5 +14,5 @@ def handle500(request):
     return render(request, '500.html', status=500)
 
 
-def handle404(request):
+def handle404(request, exception):
     return render(request, '404.html', status=404)

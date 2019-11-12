@@ -11,13 +11,14 @@ from two_factor.views import QRGeneratorView
 import django
 import account
 
+from django.contrib.auth.views import LogoutView as logout
+
 urlpatterns = [
     url(r'^$', profile, {}),
     url(r'^newapikey/$', newapikey, {}),
     url(r'^deleteapikey/(?P<key_id>\d+)/$', deleteapikey, {}),
 
-    url(r'^logout/$', django.contrib.auth.views.logout, {
-        'next_page': settings.RATTIC_ROOT_URL}),
+    url('logout/', logout.get_next_page,name='logout'),
 
     # View to kill other sessions with
     url(r'^killsession/(?P<pk>\w+)/', RatticSessionDeleteView.as_view(), name='kill_session'),

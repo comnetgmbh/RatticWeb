@@ -82,7 +82,7 @@ class Cred(models.Model):
     password = models.CharField(max_length=250, blank=True, null=True)
     descriptionmarkdown = models.BooleanField(default=False, verbose_name=_('Markdown Description'))
     description = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE,)
     groups = models.ManyToManyField(Group, related_name="child_creds", blank=True, null=True, default=None)
     tags = models.ManyToManyField(Tag, related_name='child_creds', blank=True, null=True, default=None)
     iconname = models.CharField(default='Key.png', max_length=64, verbose_name='Icon')
@@ -91,7 +91,7 @@ class Cred(models.Model):
 
     # Application controlled fields
     is_deleted = models.BooleanField(default=False, db_index=True)
-    latest = models.ForeignKey('Cred', related_name='history', blank=True, null=True, db_index=True)
+    latest = models.ForeignKey('Cred', on_delete=models.CASCADE, related_name='history', blank=True, null=True, db_index=True)
     modified = models.DateTimeField(db_index=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -220,8 +220,8 @@ class CredAudit(models.Model):
     )
 
     audittype = models.CharField(max_length=1, choices=CREDAUDITCHOICES)
-    cred = models.ForeignKey(Cred, related_name='logs')
-    user = models.ForeignKey(User, related_name='credlogs')
+    cred = models.ForeignKey(Cred, on_delete=models.CASCADE, related_name='logs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='credlogs')
     time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -244,7 +244,7 @@ class CredChangeQManager(models.Manager):
 class CredChangeQ(models.Model):
     objects = CredChangeQManager()
 
-    cred = models.ForeignKey(Cred, unique=True)
+    cred = models.ForeignKey(Cred, on_delete=models.CASCADE, unique=True)
     time = models.DateTimeField(auto_now_add=True)
 
 
