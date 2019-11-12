@@ -110,7 +110,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
         'DIRS': [os.path.join(BASE_DIR, "templates")],
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,9 +118,17 @@ TEMPLATES = [
                 # `allauth` needs this from django
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
+]
+
+MIDDLEWARE = [
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+
 ]
 
 
@@ -144,6 +151,10 @@ MIDDLEWARE_CLASSES = (
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
 )
 
 ROOT_URLCONF = 'ratticweb.urls'
@@ -187,7 +198,7 @@ INSTALLED_APPS = (
     'two_factor',
  #   'south',
     'tastypie',
-    'kombu.transport.django',
+ #   'kombu.transport.django',
     'djcelery',
     'database_files',
  #   'social_auth',
@@ -455,3 +466,10 @@ else:
         PASSWORD_EXPIRY = False
     except ValueError:
         PASSWORD_EXPIRY = False
+
+STATICFILES_DIRS = (
+     os.path.join(BASE_DIR, 'static'),
+)
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+
+STATIC_URL = '/static/'
