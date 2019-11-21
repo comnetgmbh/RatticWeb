@@ -1,8 +1,8 @@
 from django.test import TestCase
-from django.utils.unittest import skipIf
+from django.test.utils import skipIf
 from cred.models import Cred
 from django.contrib.auth.models import User, Group
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test.utils import override_settings
 from django.conf import settings
 
@@ -152,7 +152,7 @@ class StaffViewTests(TestCase):
         post['confirmpass'] = 'crazypass'
         resp = self.data.staff.post(reverse('user_add'), post, follow=True)
         with self.assertRaises(KeyError):
-            print resp.context['form'].errors
+            print(resp.context['form'].errors)
         self.assertEqual(resp.status_code, 200)
         newuser = User.objects.get(username='test_user')
         self.assertEqual(newuser.email, 'me@me.com')
