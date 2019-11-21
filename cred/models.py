@@ -31,7 +31,7 @@ class CredIconAdmin(admin.ModelAdmin):
 class SearchManager(models.Manager):
     def visible(self, user, historical=False, deleted=False):
         usergroups = user.groups.all()
-        qs = super(SearchManager, self).get_query_set()
+        qs = super(SearchManager, self).get_queryset()
 
         if not user.is_staff or not deleted:
             qs = qs.exclude(is_deleted=True, latest=None)
@@ -83,11 +83,11 @@ class Cred(models.Model):
     descriptionmarkdown = models.BooleanField(default=False, verbose_name=_('Markdown Description'))
     description = models.TextField(blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE,)
-    groups = models.ManyToManyField(Group, related_name="child_creds", blank=True, null=True, default=None)
-    tags = models.ManyToManyField(Tag, related_name='child_creds', blank=True, null=True, default=None)
+    groups = models.ManyToManyField(Group, related_name="child_creds", blank=True, default=None)
+    tags = models.ManyToManyField(Tag, related_name='child_creds', blank=True, default=None)
     iconname = models.CharField(default='Key.png', max_length=64, verbose_name='Icon')
-    ssh_key = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
-    attachment = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
+    #ssh_key = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
+    #attachment = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
 
     # Application controlled fields
     is_deleted = models.BooleanField(default=False, db_index=True)
@@ -128,9 +128,9 @@ class Cred(models.Model):
             # Ohhhkaaay, so the attachment field looks like its changed every
             # time, so we do a deep comparison, if the files match we remove
             # it from the list of changed fields.
-            for field in ('attachment', 'ssh_key'):
-                if field_file_compare(oldcred[field], newcred[field]):
-                    diff = diff - set((field, ))
+            # for field in ('attachment', 'ssh_key'):
+            #     if field_file_compare(oldcred[field], newcred[field]):
+            #         diff = diff - {field}
 
             # Check if some non-metadata was changed
             chg = diff - set(Cred.METADATA)
@@ -244,7 +244,7 @@ class CredChangeQManager(models.Manager):
 class CredChangeQ(models.Model):
     objects = CredChangeQManager()
 
-    cred = models.ForeignKey(Cred, on_delete=models.CASCADE, unique=True)
+    cred = models.OneToOneField(Cred, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
 
 
