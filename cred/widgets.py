@@ -14,7 +14,7 @@ class CredAttachmentInput(ClearableFileInput):
 class CredIconChooser(HiddenInput):
     button_text = _('Choose')
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         logo = cred_icon(value, tagid='logodisplay')
         input = super(CredIconChooser, self).render(name, value, attrs)
         button = '<a href="#logoModal" role="button" class="btn" id="choosebutton" data-toggle="modal">%s</a>' % force_text(self.button_text)
