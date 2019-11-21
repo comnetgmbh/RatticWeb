@@ -26,6 +26,12 @@ from django import core
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+
+
 config = RawConfigParser()
 config.readfp(open('conf/defaults.cfg'))
 CONFIGURED_BY = config.read(['conf/local.cfg', '/etc/ratticweb.cfg'])
@@ -68,94 +74,67 @@ LANGUAGES = (
 USE_TZ = True
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "cred","static"),
+    os.path.join(BASE_DIR, "ratticweb","static"),
+]
 
-# A tuple of callables that are used to populate the context in
-# RequestContext. These callables take a request object as their
-# argument and return a dictionary of items to be merged into
-# the context.
-# TEMPLATE_CONTEXT_PROCESSORS = (
-#     "django.contrib.auth.context_processors.auth",
-#     "django.core.context_processors.debug",
-#     "django.core.context_processors.i18n",
-#     "django.core.context_processors.media",
-#     "django.core.context_processors.static",
-#     "django.core.context_processors.tz",
-#     "django.contrib.messages.context_processors.messages",
-#     'ratticweb.context_processors.base_template_reqs',
-#     'ratticweb.context_processors.logo_selector',
-# )
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
-# List of callables that know how to import templates from various sources.
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-#     # 'django.template.loaders.eggs.Loader',
-# )
+]
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
-        'APP_DIRS': True,
+        'DIRS': [
+            os.path.join(BASE_DIR, "templates"),
+            'cred/templates'
+        ],
         'OPTIONS': {
             'context_processors': [
-                # Already defined Django-related contexts here
+                    "django.contrib.auth.context_processors.auth",
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.i18n",
+                    "django.template.context_processors.media",
+                    "django.template.context_processors.static",
+                    "django.template.context_processors.tz",
+                    "django.contrib.messages.context_processors.messages",
+                    'ratticweb.context_processors.base_template_reqs',
+                    'ratticweb.context_processors.logo_selector',
 
-                # `allauth` needs this from django
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
             ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+            'debug': True,
         },
     },
 ]
 
 MIDDLEWARE = [
+
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-
-]
-
-
-MIDDLEWARE_CLASSES = (
-    'user_sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_otp.middleware.OTPMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # Custom Middleware
-    'account.middleware.StrictAuthentication',
-    'account.middleware.PasswordExpirer',
     'ratticweb.middleware.DisableClientSideCachingMiddleware',
     'ratticweb.middleware.XUACompatibleMiddleware',
     'ratticweb.middleware.CSPMiddleware',
     'ratticweb.middleware.HSTSMiddleware',
     'ratticweb.middleware.DisableContentTypeSniffing',
 
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware'
-)
 
 ROOT_URLCONF = 'ratticweb.urls'
 
@@ -163,24 +142,11 @@ ROOT_URLCONF = 'ratticweb.urls'
 RATTIC_ROOT_URL = config.get('ratticweb', 'urlroot')
 MEDIA_URL = urljoin(RATTIC_ROOT_URL, 'media/')
 STATIC_URL = urljoin(RATTIC_ROOT_URL, 'static/')
+#STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'ratticweb.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-LOCAL_APPS = (
-    # Sub apps
-    'ratticweb',
-    'cred',
-    'account',
-    'staff',
-    'help',
-)
 
 INSTALLED_APPS = (
     # External apps
@@ -202,7 +168,16 @@ INSTALLED_APPS = (
     'djcelery',
     'database_files',
  #   'social_auth',
-) + LOCAL_APPS
+
+
+    #local apps
+    'ratticweb',
+    'cred',
+    'account',
+    'staff',
+    'help',
+)
+LOCAL_APPS = ()
 
 if os.environ.get("ENABLE_TESTS") == "1":
     INSTALLED_APPS += ('django_nose', )
@@ -263,7 +238,7 @@ LOGGING = {
 # URLs
 PUBLIC_HELP_WIKI_BASE = 'https://github.com/tildaslash/RatticWeb/wiki/'
 LOGIN_REDIRECT_URL = urljoin(RATTIC_ROOT_URL, "cred/list/")
-LOGIN_URL = RATTIC_ROOT_URL
+#LOGIN_URL = RATTIC_ROOT_URL
 
 # django-user-sessions
 SESSION_ENGINE = 'user_sessions.backends.db'
@@ -427,49 +402,50 @@ GOAUTH2_ENABLED = 'goauth2' in config.sections()
 
 if GOAUTH2_ENABLED:
     AUTHENTICATION_BACKENDS = (
-        'social_auth.backends.google.GoogleOAuth2Backend',
+#        'social_auth.backends.google.GoogleOAuth2Backend',
         'django.contrib.auth.backends.ModelBackend',
     )
 
     LOGIN_URL = RATTIC_ROOT_URL + 'account/login/google-oauth2/'
     LOGIN_ERROR_URL = RATTIC_ROOT_URL + '/account/login-error/'
 
-    SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-    SOCIAL_AUTH_PROCESS_EXCEPTIONS = 'social_auth.utils.log_exceptions_to_messages'
-
-    GOOGLE_OAUTH2_CLIENT_ID = config.get('goauth2', 'client_id')
-    GOOGLE_OAUTH2_CLIENT_SECRET = config.get('goauth2', 'client_secret')
-    GOOGLE_WHITE_LISTED_DOMAINS = [config.get('goauth2', 'domain')]
-
-    SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
-    SOCIAL_AUTH_COMPLETE_URL_NAME = 'socialauth_complete'
-    SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
-
-    if confgetbool('goauth2', 'https_redirect', False):
-        SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
-    SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
-    SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile'
-    ]
+    # SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+    # SOCIAL_AUTH_PROCESS_EXCEPTIONS = 'social_auth.utils.log_exceptions_to_messages'
+    #
+    # GOOGLE_OAUTH2_CLIENT_ID = config.get('goauth2', 'client_id')
+    # GOOGLE_OAUTH2_CLIENT_SECRET = config.get('goauth2', 'client_secret')
+    # GOOGLE_WHITE_LISTED_DOMAINS = [config.get('goauth2', 'domain')]
+    #
+    # SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+    # SOCIAL_AUTH_COMPLETE_URL_NAME = 'socialauth_complete'
+    # SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+    #
+    # if confgetbool('goauth2', 'https_redirect', False):
+    #     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+    #
+    # SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+    # SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    #     'https://www.googleapis.com/auth/userinfo.email',
+    #     'https://www.googleapis.com/auth/userinfo.profile'
+    # ]
 
     SESSION_SERIALIZER='django.contrib.sessions.serializers.PickleSerializer'
 
 # Passwords expiry settings
-if GOAUTH2_ENABLED:
-    PASSWORD_EXPIRY = False
-else:
-    try:
-        PASSWORD_EXPIRY = timedelta(days=int(config.get('ratticweb', 'passwordexpirydays')))
-    except NoOptionError:
-        PASSWORD_EXPIRY = False
-    except ValueError:
-        PASSWORD_EXPIRY = False
+# if GOAUTH2_ENABLED:
+#     PASSWORD_EXPIRY = False
+# else:
+#     try:
+#         PASSWORD_EXPIRY = timedelta(days=int(config.get('ratticweb', 'passwordexpirydays')))
+#     except NoOptionError:
+#         PASSWORD_EXPIRY = False
+#     except ValueError:
+#         PASSWORD_EXPIRY = False
 
-STATICFILES_DIRS = (
-     os.path.join(BASE_DIR, 'static'),
-)
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+# STATICFILES_DIRS = [
+#      #os.path.join(BASE_DIR, 'ratticweb/static'),
+# ]
+#STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'ratticweb/static')
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
+LOGOUT_REDIRECT_URL = ''
