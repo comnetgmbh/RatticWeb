@@ -1,11 +1,14 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import LogoutView
 from tastypie.api import Api
 from cred.api import CredResource, TagResource
 from staff.api import GroupResource
 from django.conf import settings
 from .views import home
+from django.urls import include, path, re_path
+from . import views
 
 
 # Configure the error handlers
@@ -21,15 +24,18 @@ v1_api.register(GroupResource())
 # Setup the base paths for applications, and the API
 urlpatterns = [
     # Apps:
-    url('', home, name='home'),
+    path('', home, name='home'),
+    #path('/', include('django.contrib.auth.urls')),
     url(r'^account/', include('account.urls')),
-    url(r'^cred/', include('cred.urls')),
-    url(r'^staff/', include('staff.urls')),
+    path('cred/', include('cred.urls'),),
+    path('staff/', include('staff.urls')),
     url(r'^help/', include('help.urls')),
 
     #PasswordResetView
 
     url('password_reset/', PasswordResetView.as_view(), name='password_reset'),
+
+    path('logout/', views.home_logout, name='logout'),
 
     # API
     url(r'^api/', include(v1_api.urls)),
@@ -62,9 +68,14 @@ else:
     root = settings.RATTIC_ROOT_URL
 
 # Serve RatticDB from an alternate root if requested
-urlpatterns = [
-    url(r'^' + root, include(urlpatterns)),
-]
+# urlpatterns += [
+#     url(r'^' + root, include(urlpatterns)),
+# ]
 
 # Serve the static files from the right location in dev mode
 urlpatterns += staticfiles_urlpatterns()
+
+print('ratticweb:' + str(urlpatterns[0]))
+
+
+

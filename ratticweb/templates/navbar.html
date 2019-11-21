@@ -1,27 +1,29 @@
 {% load static from staticfiles %}
 {% load url_root from ratticweb %}
 {% load i18n %}
-{% url "cred.views.list" as cred_views_list %}
+{#{% url "cred.views.list" as cred_views_list %}#}
 {% url "cred.views.search" as cred_views_search %}
-{% url "cred.views.list" "special" "changeq" as cred_views_viewqueue %}
+{#{% url "cred.views.list" "special" "changeq" as cred_views_viewqueue %}#}
 {% url "staff.views.home" as staff_views_home %}
 {% url "help.views.home" as help_views_home %}
+{% url "cred.views.tags" as  cred_views_tags %}
+{% url "django.contrib.auth.logout" as logout %}
 <div class="navbar">
     <div class="navbar-inner">
         <a class="brand" href="{% url_root %}"><img class="logo" src="{% static 'rattic/img/rattic_icon_normal.png' %}" /><span class="hidden-phone"> {% trans "RatticDB" %}</span></a>
 
         <ul class="nav visible-desktop">
             <li {% if pageurl == cred_views_list %}class="active"{% endif %}>
-              <a href="{{ cred_views_list }}">{% trans "Passwords" %}</a>
+              <a href="{% url 'cred:cred_list' %}">{% trans "Passwords" %}</a>
             </li>
             {% if user.is_authenticated %}
               <li {% if pageurl == cred_views_viewqueue %}class="active"{% endif %}>
-                <a href="{{ cred_views_viewqueue }}">{% trans "Change Queue" %}{% if changeqcount > 0 %} <span class="badge">{{ changeqcount }}</span>{% endif %}</a>
+                <a href="{% url 'cred:list2' "special" "changeq" %}">{% trans "Change Queue" %}{% if changeqcount > 0 %} <span class="badge">{{ changeqcount }}</span>{% endif %}</a>
               </li>
             {% endif %}
             {% if user.is_staff %}
               <li {% if pageurl == staff_views_home %}class="active"{% endif %}>
-                <a href="{{ staff_views_home }}">{% trans "Staff Management" %}</a>
+                <a href="{% url 'staff' %}">{% trans "Staff Management" %}</a>
               </li>
             {% endif %}
             {% if helplinks %}
@@ -37,21 +39,21 @@
             <ul class="dropdown-menu" role="menu">
               {% if user.is_authenticated %}
                 <li>
-                  <a href="{% url "cred.views.tags" %}">{% trans "Tags" %}</a>
+                  <a href="{{ cred_views_tags }}">{% trans "Tags" %}</a>
                 </li>
                 <li>
-                  <a href="{{ cred_views_list }}">{% trans "All Passwords" %}</a>
+                  <a href='/cred/listnm'>{% trans "All Passwords" %}</a>
                 </li>
                 <li>
                   <a href="{{ cred_views_viewqueue }}">{% trans "Change Queue" %}{% if changeqcount > 0 %} <span class="badge">{{ changeqcount }}</span>{% endif %}</a>
                 </li>
                 {% if user.is_staff %}
                   <li>
-                    <a href="{{ staff_views_home }}">{% trans "Staff Management" %}</a>
+                    <a href="{{ staff }}">{% trans "Staff Management" %}</a>
                   </li>
                 {% endif %}
                 <li>
-                  <a href="{% url "django.contrib.auth.views.logout" %}">{% trans "Logout" %}</a>
+                  <a href="{{ logout }}">{% trans "Logout" %}</a>
                 </li>
               {% else %}
                 <li>

@@ -52,7 +52,7 @@ LDAPPassChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     items_per_page = models.IntegerField(default=25)
     favourite_tags = models.ManyToManyField(Tag, blank=True)
     password_changed = models.DateTimeField(default=now)

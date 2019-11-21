@@ -1,11 +1,12 @@
 from django.conf.urls import url
+from django.urls import path, re_path
 from django.conf import settings
 from .views import NewUser, UpdateUser
 from . import views
 
 urlpatterns = [
     # Views in views.py
-    url(r'^$',views.home,name= 'home'),
+    path('', views.home, name='staff'),
 
     # User/Group Management
     url(r'^userdetail/(?P<uid>\d+)/$',views.userdetail,name='userdetail'),
@@ -43,3 +44,5 @@ if not settings.LDAP_ENABLED:
         url(r'^useradd/$', NewUser.as_view(), name="user_add"),
 
     ]
+
+print('staff:' + str(urlpatterns[0]))
