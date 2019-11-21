@@ -9,40 +9,38 @@ urlpatterns = [
     path('', views.home, name='staff'),
 
     # User/Group Management
-    url(r'^userdetail/(?P<uid>\d+)/$',views.userdetail,name='userdetail'),
-    url(r'^removetoken/(?P<uid>\d+)/$',views.removetoken,name= 'removetoken'),
-    url(r'^groupdetail/(?P<gid>\d+)/$',views.groupdetail, name= 'groupdetail'),
+    path('userdetail/<int:uid>/',views.userdetail,name='userdetail'),
+    path('removetoken/<int:uid>/',views.removetoken,name= 'removetoken'),
+    path('groupdetail/<int:uid>/',views.groupdetail, name= 'groupdetail'),
 
     # Auditing
-    url(r'^audit-by-(?P<by>\w+)/(?P<byarg>\d+)/$',views.audit, name= 'audit'),
+    path('audit-by-<str:by>/<int:byarg>/',views.audit, name= 'audit'),
 
     # Importing
-    url(r'^import/keepass/$',views.upload_keepass,name= 'upload_keepass'),
-    url(r'^import/process/$',views.import_overview, name= 'import_overview'),
-    url(r'^import/process/(?P<import_id>\d+)/$',views.import_process,name= 'import_process'),
-    url(r'^import/process/(?P<import_id>\d+)/ignore/$',views.import_ignore,name= 'import_ignore'),
+    path('import/keepass/',views.upload_keepass,name= 'upload_keepass'),
+    path('import/process/',views.import_overview, name= 'import_overview'),
+    path('import/process/<int:import_id>/',views.import_process,name= 'import_process'),
+    path('import/process/<int:import_id>/ignore/',views.import_ignore,name= 'import_ignore'),
 
     # Undeletion
-    url(r'^credundelete/(?P<cred_id>\d+)/$',views.credundelete,name= 'credundelete'),
+    path('credundelete/<int:cred_id>/',views.credundelete,name= 'credundelete'),
 ]
 
 # URLs we remove if using LDAP groups
 if not settings.USE_LDAP_GROUPS:
     urlpatterns += [
         # Group Management
-        url(r'^groupadd/$', views.groupadd,name='groupadd'),
-        url(r'^groupedit/(?P<gid>\d+)/$',views.groupedit,name= 'groupedit'),
-        url(r'^groupdelete/(?P<gid>\d+)/$',views.groupdelete,name= 'groupdelete'),
-        url(r'^useredit/(?P<pk>\d+)/$', UpdateUser.as_view(), name="user_edit"),
-        url(r'^userdelete/(?P<uid>\d+)/$',views.userdelete,name= 'userdelete'),
+        path('groupadd/', views.groupadd,name='groupadd'),
+        path('groupedit/<int:gid>/',views.groupedit,name= 'groupedit'),
+        path('groupdelete/<int:gid>/',views.groupdelete,name= 'groupdelete'),
+        path('useredit/<int:pk>/', UpdateUser.as_view(), name="user_edit"),
+        path('userdelete/<int:uid>/',views.userdelete,name= 'userdelete'),
     ]
 
 # User add is disabled only when LDAP config exists
 if not settings.LDAP_ENABLED:
     urlpatterns += [
         # User Management
-        url(r'^useradd/$', NewUser.as_view(), name="user_add"),
+        path('useradd/', NewUser.as_view(), name="user_add"),
 
     ]
-
-print('staff:' + str(urlpatterns[0]))

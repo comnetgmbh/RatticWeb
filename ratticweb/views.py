@@ -20,7 +20,7 @@ def home(request):
         login(request, user)
         if request.user.is_authenticated:
             print('test')
-            return redirect('cred_list')
+            return redirect('cred:cred_list')
 
     else:
         nextpage = request.GET.get('next', ' ')
@@ -29,7 +29,6 @@ def home(request):
 
 def home_logout(request):
     logout(request)
-    print(request.user)
     return render(request, 'home.html')
 
 def handle500(request):

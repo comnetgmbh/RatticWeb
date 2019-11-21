@@ -1,7 +1,8 @@
 from django.conf.urls import url
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    url(r'^$',views.home,name= 'home'),
-    url(r'^(?P<page>[\w\-]+)/$',views.markdown,name= 'markdown'),
+    path('',views.home,name= 'home'),
+    path('<str:page>/',views.markdown,name= 'markdown'),
 ]

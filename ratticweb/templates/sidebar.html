@@ -7,7 +7,7 @@
 {% if user.is_authenticated %}
     <h4>{% trans "You" %}</h4>
         <p>{% blocktrans with username=user.username|title %}Welcome {{ username }}.{% endblocktrans %}<p>
-        <a class="btn" href="{{ account_views_profile }}">{% trans "Profile" %}</a>
+        <a class="btn" href="{% url 'profile' %}">{% trans "Profile" %}</a>
         <a class="btn btn-danger" href="{% url 'logout' %}">{% trans "Logout" %}</a>
     <h4><a href="{{ cred_views_tags }}">{% trans "Tags" %}</a></h4>
     {% if user.is_authenticated %}
@@ -15,11 +15,11 @@
         <p><i class="icon-minus"></i> <a href="{% url "cred_list" "tag" tag.id %}">{{ tag.name }}</a></p>
         {% empty %}
         <p>{% blocktrans %}Add Favourite Tags on the {% endblocktrans %}
-        <a href="{{ account_views_profile }}">{% trans "profile" %}</a> {% blocktrans %}page to see them here.{% endblocktrans %}</p>
+        <a href="{% url 'profile' %}">{% trans "profile" %}</a> {% blocktrans %}page to see them here.{% endblocktrans %}</p>
         {% endfor %}
 		<h4>{% trans "Groups" %}</h4>
         {% for g in user.groups.all %}
-{#        <p><i class="icon-minus"></i> <a href="{% url "cred:cred_list" "group" g.id %}">{{ g.name }}</a></p>#}
+        <p><i class="icon-minus"></i> <a href="{% url "cred:list2" "group" g.id %}">{{ g.name }}</a></p>
         {% empty %}
         <p>{% blocktrans %}If you are a member of any groups, you will see them listed here. {% endblocktrans %}</p>
         {% endfor %}

@@ -10,42 +10,41 @@ app_name = 'cred'
 urlpatterns = [
     # New list views
     path('list/', list , name="cred_list"),
-    path('list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/',views.list,name='list2'),
-    path('list-by-(?P<cfilter>\w+)/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/',views.list,name='list3'),
-    path('list-by-<str:cfilter>/(?P<value>[^/]*)/sort-(?P<sortdir>ascending|descending)-by-(?P<sort>\w+)/page-(?P<page>\d+)/',views.list,name='list4'),
+    path('list-by-<str:cfilter>/<str:value>/',views.list,name='list2'),
+    path('list-by-<str:cfilter>/<str:value>/sort-<str:sortdir>-by-<str:sort>/',views.list,name='list3'),
+    path('list-by-<str:cfilter>/<str:value>/sort-<str:sortdir>-by-<str:sort>/page-<int:page>/',views.list,name='list4'),
 
     # Search dialog for mobile
-    url(r'^search/$',views.search,name='search'),
+    path('search/',views.search,name='search'),
 
     # Single cred views
     path('detail/<int:cred_id>/', views.detail, name= 'detail'),
-    path('^detail/(?P<cred_id>\d+)/fingerprint/$',views.ssh_key_fingerprint,name= 'ssh_key_fingerprint'),
-    path('^detail/(?P<cred_id>\d+)/download/$',views.downloadattachment,name= 'downloadattachment'),
-    path('^detail/(?P<cred_id>\d+)/ssh_key/$',views.downloadsshkey,name= 'downloadsshkey'),
-    path('^edit/(?P<cred_id>\d+)/$',views.edit,name= 'edit'),
-    path('^delete/(?P<cred_id>\d+)/$',views.delete,name= 'delete'),
-    path('^add/$',views.add,name= 'add'),
+    #path('^detail/(?P<cred_id>\d+)/fingerprint/$',views.ssh_key_fingerprint,name= 'ssh_key_fingerprint'),
+    #path('^detail/(?P<cred_id>\d+)/download/$',views.downloadattachment,name= 'downloadattachment'),
+    #path('detail/<double:cred_id>/ssh_key/',views.downloadsshkey,name= 'downloadsshkey'),
+    path('edit/<int:cred_id>/',views.edit,name= 'edit'),
+    path('delete/<int:cred_id>/',views.delete,name= 'delete'),
+    path('add/',views.add,name= 'add'),
 
     # Adding to the change queue
-    path('^addtoqueue/(?P<cred_id>\d+)/$',views.addtoqueue,name= 'addtoqueue'),
+    path('addtoqueue/<int:cred_id>/',views.addtoqueue,name= 'addtoqueue'),
 
     # Bulk views (for buttons on list page)
-    path('^addtoqueue/bulk/$',views.bulkaddtoqueue,name= 'bulkaddtoqueue'),
-    path('^delete/bulk/$',views.bulkdelete,name= 'bulkdelete'),
-    path('^undelete/bulk/$',views.bulkundelete,name= 'bulkundelete'),
-    path('^addtag/bulk/$',views.bulktagcred,name= 'bulktagcred'),
+    path('addtoqueue/bulk/',views.bulkaddtoqueue,name= 'bulkaddtoqueue'),
+    path('delete/bulk/',views.bulkdelete,name= 'bulkdelete'),
+    path('undelete/bulk/',views.bulkundelete,name= 'bulkundelete'),
+    path('addtag/bulk/',views.bulktagcred,name= 'bulktagcred'),
 
     # Tags
     path('tag/',views.tags, name= 'tags'),
-    path('^tag/add/$',views.tagadd, name= 'tagadd'),
-    path('^tag/edit/(?P<tag_id>\d+)/$',views.tagedit, name= 'tagedit'),
-    path('^tag/delete/(?P<tag_id>\d+)/$',views.tagdelete,name= 'tagdelete'),
+    path('tag/add/',views.tagadd, name= 'tagadd'),
+    path('tag/edit/<int:tag_id>',views.tagedit, name= 'tagedit'),
+    path('tag/delete/<int:tag_id>',views.tagdelete,name= 'tagdelete'),
 ]
 
 if not settings.RATTIC_DISABLE_EXPORT:
     urlpatterns += [
         # Export views
-        url(r'^export.kdb$',views.download, name= 'download'),
-        url(r'^export-by-(?P<cfilter>\w+)/(?P<value>[^/]*).kdb$',views.download,name= 'download_filter'),
+        path('export.kdb',views.download, name= 'download'),
+        path('export-by-<str:cfilter>/<str:value>.kdb',views.download,name= 'download_filter'),
     ]
-print('cred:' + str(urlpatterns))

@@ -25,23 +25,22 @@ v1_api.register(GroupResource())
 urlpatterns = [
     # Apps:
     path('', home, name='home'),
-    #path('/', include('django.contrib.auth.urls')),
-    url(r'^account/', include('account.urls')),
+    path('account/', include('account.urls')),
     path('cred/', include('cred.urls'),),
     path('staff/', include('staff.urls')),
-    url(r'^help/', include('help.urls')),
+    path('help/', include('help.urls')),
 
     #PasswordResetView
 
-    url('password_reset/', PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/', PasswordResetView.as_view(), name='password_reset'),
 
     path('logout/', views.home_logout, name='logout'),
 
     # API
-    url(r'^api/', include(v1_api.urls)),
+    path('api/', include(v1_api.urls)),
 
     # Language
-    url(r'^i18n/', include('django.conf.urls.i18n')),
+    path('i18n/', include('django.conf.urls.i18n')),
 
     # two Factor
     # url(r'^', include('two_factor.urls', namespace='two_factor')),
@@ -55,10 +54,10 @@ if settings.DEBUG:
 
     urlpatterns += [
         # Uncomment the admin/doc line below to enable admin documentation:
-        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+        path('admin/doc/', include('django.contrib.admindocs.urls')),
 
         # Uncomment the next line to enable the admin:
-        url(r'^admin/', admin.site.urls),
+        path('admin/', admin.site.urls),
     ]
 
 # Strip any leading slash from the RATTIC_ROOT_URL
@@ -75,7 +74,6 @@ else:
 # Serve the static files from the right location in dev mode
 urlpatterns += staticfiles_urlpatterns()
 
-print('ratticweb:' + str(urlpatterns[0]))
 
 
 
