@@ -24,7 +24,7 @@ def home(request):
 
     else:
         nextpage = request.GET.get('next', ' ')
-        return render(request, 'home.html', {'next': nextpage})
+        return render(request, 'home.html', {})
 
 
 def home_logout(request):
