@@ -55,7 +55,7 @@ if not settings.LDAP_ENABLED:
             name="password_reset_done"
             ),
 
-        path('reset/<str:uidb64>-<str:token>)/',
+        path('reset/<str:uidb64>-<str:token>/',
             auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html', success_url='/'),
             name="password_reset_confirm"
             ),
