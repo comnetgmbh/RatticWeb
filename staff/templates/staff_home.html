@@ -15,7 +15,7 @@
     <a class="btn" href="{% url "groupadd" %}">{% trans "Add Group" %}</a>
   {% endif %}
   <a class="btn" href="{% url "upload_keepass" %}">{% trans "Import Keepass" %}</a>
-{#  <a class="btn" href="{% url "cred:cred_list" 'special' 'trash' %}">{% trans "View Trash" %}</a>#}
+  <a class="btn" href="{% url "cred:list2" 'special' 'trash' %}">{% trans "View Trash" %}</a>
   <a class="btn" href="{% url "audit" "days" 7 %}">{% trans "Audit One Week" %}</a>
 </div>
 

@@ -9,8 +9,10 @@ from django.conf import settings
 
 from ratticweb.util import DictDiffer, field_file_compare
 from .ssh_key import SSHKey
-from .fields import SizedFileField
+# from .fields import SizedFileField
 from .storage import CredAttachmentStorage
+
+from django.utils.deconstruct import deconstructible
 
 
 
@@ -68,7 +70,7 @@ class SearchManager(models.Manager):
         # Fetch the list of credentials to change from the DB for the view
         return Cred.objects.filter(id__in=tochange)
 
-
+@deconstructible
 class Cred(models.Model):
     METADATA = ('description', 'descriptionmarkdown', 'group', 'groups', 'tags', 'iconname', 'latest', 'id', 'modified', 'attachment_name', 'ssh_key_name')
     SORTABLES = ('title', 'username', 'group', 'id', 'modified')
@@ -86,8 +88,8 @@ class Cred(models.Model):
     groups = models.ManyToManyField(Group, related_name="child_creds", blank=True, default=None)
     tags = models.ManyToManyField(Tag, related_name='child_creds', blank=True, default=None)
     iconname = models.CharField(default='Key.png', max_length=64, verbose_name='Icon')
-    #ssh_key = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
-    #attachment = SizedFileField(storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
+    ssh_key = models.FileField(null=True, blank=True, upload_to='not required')
+    attachment = models.FileField( null=True, blank=True, upload_to='not required')
 
     # Application controlled fields
     is_deleted = models.BooleanField(default=False, db_index=True)
@@ -128,9 +130,9 @@ class Cred(models.Model):
             # Ohhhkaaay, so the attachment field looks like its changed every
             # time, so we do a deep comparison, if the files match we remove
             # it from the list of changed fields.
-            # for field in ('attachment', 'ssh_key'):
-            #     if field_file_compare(oldcred[field], newcred[field]):
-            #         diff = diff - {field}
+            for field in ('attachment', 'ssh_key'):
+                if field_file_compare(oldcred[field], newcred[field]):
+                    diff = diff - {field}
 
             # Check if some non-metadata was changed
             chg = diff - set(Cred.METADATA)

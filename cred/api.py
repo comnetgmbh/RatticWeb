@@ -103,10 +103,10 @@ class CredResource(ModelResource):
             del bundle.data['password']
 
         # Expand the ssh key
-        # if bundle.obj.ssh_key:
-        #     bundle.data['ssh_key'] = bundle.obj.ssh_key.read()
-        # else:
-        #     del bundle.data['ssh_key']
+        if bundle.obj.ssh_key:
+            bundle.data['ssh_key'] = bundle.obj.ssh_key.read()
+        else:
+            del bundle.data['ssh_key']
 
         return bundle
 

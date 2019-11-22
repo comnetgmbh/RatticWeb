@@ -28,7 +28,7 @@ of the passwords, simply uncheck them first.{% endblocktrans %}</p>
     <td><a href="{% url "cred:detail" c.id %}">{{ c.title }}</a></td>
     <td>{{ c.username }}</td>
     <td>{{ c.group.name }}</td>
-    <td>{% for t in c.tags.all %}{% if not forloop.first %}, {% endif %}<a href="{% url "cred:cred_list" "tag" t.id %}">{{ t.name }}</a>{% endfor %}</td>
+    <td>{% for t in c.tags.all %}{% if not forloop.first %}, {% endif %}<a href="{% url "cred:list2" "tag" t.id %}">{{ t.name }}</a>{% endfor %}</td>
 </tr>
 {% endfor %}
 </tbody>

@@ -19,9 +19,9 @@ urlpatterns = [
 
     # Single cred views
     path('detail/<int:cred_id>/', views.detail, name= 'detail'),
-    #path('^detail/(?P<cred_id>\d+)/fingerprint/$',views.ssh_key_fingerprint,name= 'ssh_key_fingerprint'),
-    #path('^detail/(?P<cred_id>\d+)/download/$',views.downloadattachment,name= 'downloadattachment'),
-    #path('detail/<double:cred_id>/ssh_key/',views.downloadsshkey,name= 'downloadsshkey'),
+    path('detail/<int:cred_id>/fingerprint/',views.ssh_key_fingerprint,name= 'ssh_key_fingerprint'),
+    path('detail/<int:cred_id>/download/',views.downloadattachment,name= 'downloadattachment'),
+    path('detail/<int:cred_id>/ssh_key/',views.downloadsshkey,name= 'downloadsshkey'),
     path('edit/<int:cred_id>/',views.edit,name= 'edit'),
     path('delete/<int:cred_id>/',views.delete,name= 'delete'),
     path('add/',views.add,name= 'add'),

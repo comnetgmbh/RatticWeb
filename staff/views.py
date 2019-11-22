@@ -25,7 +25,6 @@ from .decorators import rattic_staff_required
 def home(request):
     userlist = User.objects.all()
     grouplist = Group.objects.all()
-    print('test')
     return render(request, 'staff_home.html', {'userlist': userlist, 'grouplist': grouplist})
 
 
@@ -359,11 +358,11 @@ def credundelete(request, cred_id):
         CredAudit(audittype=CredAudit.CREDADD, cred=cred, user=request.user).save()
         cred.is_deleted = False
         cred.save()
-        return HttpResponseRedirect(reverse('cred:cred_list', args=('special', 'trash')))
+        return HttpResponseRedirect(reverse('cred:list2', args=('special', 'trash')))
 
     CredAudit(audittype=CredAudit.CREDVIEW, cred=cred, user=request.user).save()
 
-    return render(request, 'cred_detail.html', {'cred': cred, 'lastchange': lastchange, 'action': reverse('cred.views.delete', args=(cred_id,)), 'undelete': True})
+    return render(request, 'cred_detail.html', {'cred': cred, 'lastchange': lastchange, 'action': reverse('cred:delete', args=(cred_id,)), 'undelete': True})
 
 
 @rattic_staff_required

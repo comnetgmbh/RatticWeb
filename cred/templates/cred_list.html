@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load credicons %}
+{% load static %}
 
 {% block title %}{{ credtitle }} - {% trans "Rattic" %}{% endblock %}
 
@@ -81,7 +82,8 @@
     <tr class="{% if c.on_changeq %}warning{% endif %} {% if not c.is_latest %}info{% endif %}">
       <td class="credcheck"><input type="checkbox" name="credcheck" value="{{ c.id }}" class="list-checktarget cred-list-check" /></td>
       <td>
-{#          {% cred_icon c.iconname %} #}
+{#          {% cred_icon c.iconname %}#}
+          <img  src="{% static 'rattic/img/Key.png' %}">
           <a href="{% url "cred:detail" c.id %}">{{ c.title|default:"(No Title)" }}</a></td>
       <td>{{ c.username }}</td>
       <td>{% if c.group in groups.all %}<a href="{% url "cred:list2" "group" c.group.id %}">{{ c.group.name }}</a>{% else %}{{ c.group.name }}{% endif %}</td>

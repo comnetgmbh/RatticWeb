@@ -11,7 +11,7 @@ urlpatterns = [
     # User/Group Management
     path('userdetail/<int:uid>/',views.userdetail,name='userdetail'),
     path('removetoken/<int:uid>/',views.removetoken,name= 'removetoken'),
-    path('groupdetail/<int:uid>/',views.groupdetail, name= 'groupdetail'),
+    path('groupdetail/<int:gid>/',views.groupdetail, name= 'groupdetail'),
 
     # Auditing
     path('audit-by-<str:by>/<int:byarg>/',views.audit, name= 'audit'),
