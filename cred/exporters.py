@@ -31,9 +31,9 @@ def export_keepass(creds, password, filename='RatticExport.kdb'):
             notes=desc,
         )
 
-        # if c.attachment:
-        #     e.binary_desc = c.attachment_name
-        #     e.binary = c.attachment.read()
+        if c.attachment:
+            e.binary_desc = c.attachment_name
+            e.binary = c.attachment.read()
 
     # Send the response
     response = HttpResponse(content_type='application/x-keepass')

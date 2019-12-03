@@ -10,7 +10,7 @@ from django.conf import settings
 from ratticweb.util import DictDiffer, field_file_compare
 from .ssh_key import SSHKey
 # from .fields import SizedFileField
-from .storage import CredAttachmentStorage
+# from .storage import CredAttachmentStorage
 
 from django.utils.deconstruct import deconstructible
 

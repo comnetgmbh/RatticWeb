@@ -214,7 +214,7 @@ def upload_keepass(request):
             request.session['imported_data'] = data
 
             # Start the user processing entries
-            return HttpResponseRedirect(reverse('staff.views.import_overview'))
+            return HttpResponseRedirect(reverse('import_overview'))
     else:
         form = KeepassImportForm(request.user)
     return render(request, 'staff_keepassimport.html', {'form': form})
@@ -253,7 +253,7 @@ def import_ignore(request, import_id):
     except IndexError:
         raise Http404
 
-    return HttpResponseRedirect(reverse('staff.views.import_overview'))
+    return HttpResponseRedirect(reverse('import_overview'))
 
 
 @rattic_staff_required
@@ -305,7 +305,7 @@ def import_process(request, import_id):
             request.session.save()
 
             # Go back to the overview
-            return HttpResponseRedirect(reverse('staff.views.import_overview'))
+            return HttpResponseRedirect(reverse('import_overview'))
 
     else:
         # Init the cred, and create the form

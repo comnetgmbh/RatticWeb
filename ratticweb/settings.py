@@ -167,7 +167,7 @@ INSTALLED_APPS = (
     'tastypie',
  #   'kombu.transport.django',
     'djcelery',
-    'database_files',
+    # 'database_files',
  #   'social_auth',
 
 
@@ -269,7 +269,8 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 # [ratticweb]
 DEBUG = confgetbool('ratticweb', 'debug', False)
 # TEMPLATE_DEBUG = DEBUG
-TIME_ZONE = config.get('ratticweb', 'timezone')
+# TIME_ZONE = config.get('ratticweb', 'timezone')
+TIME_ZONE = 'UTC'
 SECRET_KEY = config.get('ratticweb', 'secretkey')
 ALLOWED_HOSTS = [config.get('ratticweb', 'hostname'), 'localhost']
 HOSTNAME = config.get('ratticweb', 'hostname')
