@@ -1,10 +1,10 @@
-Django==2.2.6
+Django==3.0.4
 Markdown==2.4.1
 Pillow==2.3.2
 django-auth-ldap==2.0.0
 django-database-files==0.1
 django-otp==0.7.3
-django-tastypie==0.14.2
+django-tastypie==0.14.3
 django-two-factor-auth==1.9.1
 django-user-sessions==1.6.0
 mimeparse==0.1.3
