@@ -48,7 +48,7 @@ class LDAPPassChangeForm(SetPasswordForm):
 
         return self.user
 
-LDAPPassChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
+#LDAPPassChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
 
 
 class UserProfile(models.Model):
