@@ -141,7 +141,6 @@ ROOT_URLCONF = 'ratticweb.urls'
 # Urls
 RATTIC_ROOT_URL = config.get('ratticweb', 'urlroot')
 MEDIA_URL = urljoin(RATTIC_ROOT_URL, 'media/')
-# STATIC_URL = '/home/simon/rattic/rattic-rework/ratticweb/static/'
 STATIC_URL = urljoin(RATTIC_ROOT_URL, 'static/')
 #STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
