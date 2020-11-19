@@ -48,13 +48,13 @@ class LDAPPassChangeForm(SetPasswordForm):
 
         return self.user
 
-LDAPPassChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
+#LDAPPassChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True)
-    items_per_page = models.IntegerField(verbose_name=_('Items per page'), default=25)
-    favourite_tags = models.ManyToManyField(Tag, verbose_name=_('Favourite tags'), blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    items_per_page = models.IntegerField(default=25)
+    favourite_tags = models.ManyToManyField(Tag, blank=True)
     password_changed = models.DateTimeField(default=now)
 
     def __unicode__(self):
@@ -86,7 +86,7 @@ def user_save_handler(sender, instance, **kwargs):
 
 
 class ApiKey(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, related_name='rattic_api_key')
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='rattic_api_key')
     key = models.CharField(max_length=128, blank=True, default='', db_index=True)
     name = models.CharField(max_length=128)
     active = models.BooleanField(default=True)

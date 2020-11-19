@@ -8,12 +8,30 @@ class DisableClientSideCachingMiddleware(object):
     passwords or other data to disk. This makes most browsers refresh
     the page when the back button is used.
     """
-    def process_response(self, request, response):
+    # def process_response(self, request, response):
+    #     patch_cache_control(response,
+    #         no_cache=True,
+    #         no_store=True,
+    #         must_revalidate=True,
+    #         )
+    #     return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
         patch_cache_control(response,
-            no_cache=True,
-            no_store=True,
-            must_revalidate=True,
-            )
+                            no_cache=True,
+                            no_store=True,
+                            must_revalidate=True,
+                            )
+
         return response
 
 
@@ -23,8 +41,22 @@ class XUACompatibleMiddleware(object):
     This header tells to Internet Explorer to render page with latest
     possible version or to use chrome frame if it is installed.
     """
-    def process_response(self, request, response):
+    # def process_response(self, request, response):
+    #     response['X-UA-Compatible'] = 'IE=edge,chrome=1'
+    #     return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
         response['X-UA-Compatible'] = 'IE=edge,chrome=1'
+
         return response
 
 
@@ -33,9 +65,24 @@ class CSPMiddleware(object):
     Adds a Content-Security-Policy header to the response. This header
     makes browsers refuse to load content from domains that are not Rattic.
     """
-    def process_response(self, request, response):
+    # def process_response(self, request, response):
+    #     policy = "default-src 'self';style-src 'self' 'unsafe-inline'"
+    #     response['Content-Security-Policy'] = policy
+    #     return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
         policy = "default-src 'self';style-src 'self' 'unsafe-inline'"
         response['Content-Security-Policy'] = policy
+
         return response
 
 
@@ -47,9 +94,24 @@ class HSTSMiddleware(object):
 
     See: http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
     """
-    def process_response(self, request, response):
+    # def process_response(self, request, response):
+    #     if request.is_secure():
+    #         response['Strict-Transport-Security'] = 'max-age=31536000'
+    #     return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
         if request.is_secure():
             response['Strict-Transport-Security'] = 'max-age=31536000'
+
         return response
 
 
@@ -61,6 +123,20 @@ class DisableContentTypeSniffing(object):
     security issues and since RatticDB always sends the intended Content-Type
     it can be disabled.
     """
-    def process_response(self, request, response):
+    # def process_response(self, request, response):
+    #     response['X-Content-Type-Options'] = 'nosniff'
+    #     return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
         response['X-Content-Type-Options'] = 'nosniff'
+
         return response

@@ -7,7 +7,7 @@ import boto
 from db_backup.errors import FailedBackup
 
 from contextlib import contextmanager
-import urlparse
+import urllib
 import tempfile
 import logging
 import os
@@ -42,7 +42,7 @@ class BackupStorage(object):
     @classmethod
     @contextmanager
     def from_address(cls, s3_address):
-        info = urlparse.urlparse(s3_address)
+        info = urllib.parse(s3_address)
         if info.scheme != "s3":
             raise FailedBackup("Trying to restore from a non s3 address ({0})".format(s3_address))
 
@@ -68,7 +68,7 @@ class BackupStorage(object):
         """Make sure our storage is fine and yield self as the storage helper"""
         try:
             self.validate_destination()
-        except (boto.exception.BotoClientError, boto.exception.BotoServerError, boto.exception.NoAuthHandlerFound), error:
+        except (boto.exception.BotoClientError, boto.exception.BotoServerError, boto.exception.NoAuthHandlerFound) as error:
             raise FailedBackup("Failed to interact with s3: {0}".format(error))
 
         return self
@@ -89,7 +89,7 @@ class BackupStorage(object):
             try:
                 self.bucket = conn.get_bucket(self.bucket_location)
                 self.has_storage = True
-            except boto.exception.S3ResponseError, error:
+            except boto.exception.S3ResponseError as error:
                 if error.status == 404:
                     raise FailedBackup("Please first create the s3 bucket where you want your backups to go ({0})".format(self.bucket_location))
                 raise

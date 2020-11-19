@@ -10,7 +10,7 @@ def base_template_reqs(request):
         'GOAUTH2_ENABLED': settings.GOAUTH2_ENABLED,
         'USE_LDAP_GROUPS': settings.USE_LDAP_GROUPS,
         'EXPORT_ENABLED': not settings.RATTIC_DISABLE_EXPORT,
-        'TEMPLATE_DEBUG': settings.TEMPLATE_DEBUG,
+        #'TEMPLATE_DEBUG': settings.TEMPLATES,
         'ALLOWPWCHANGE': not (settings.LDAP_ENABLED
             and not settings.AUTH_LDAP_ALLOW_PASSWORD_CHANGE),
         'rattic_icon': 'rattic/img/rattic_icon_normal.png',
@@ -22,7 +22,7 @@ def base_template_reqs(request):
     else:
         cntx['helplinks'] = False
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         cntx['changeqcount'] = CredChangeQ.objects.for_user(request.user).count()
 
     return cntx

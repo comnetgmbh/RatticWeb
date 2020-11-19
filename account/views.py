@@ -1,15 +1,15 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from account.models import ApiKey, ApiKeyForm
-from models import UserProfileForm, LDAPPassChangeForm
+from .models import UserProfileForm, LDAPPassChangeForm
 
 from django.views.decorators.debug import sensitive_post_parameters
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 from django.utils.timezone import now
 from django.contrib.auth import login
-from django.contrib.auth.views import password_change
+from django.contrib.auth.views import PasswordChangeView as password_change
 from django.contrib.auth.forms import SetPasswordForm
 from django.utils import timezone
 
@@ -22,14 +22,13 @@ import uuid
 
 @login_required
 def rattic_change_password(request, *args, **kwargs):
-    print request.user
     if request.user.has_usable_password():
         # If a user is changing their password
-        return password_change(request, *args, **kwargs)
+        return password_change.as_view(request)
     else:
         # If a user is setting an initial password
         kwargs['password_change_form'] = SetPasswordForm
-        return password_change(request, *args, **kwargs)
+        return password_change.as_view(request, *args, **kwargs)
 
 
 @login_required
@@ -93,7 +92,7 @@ def deleteapikey(request, key_id):
 
     if request.method == 'POST':
         key.delete()
-        return HttpResponseRedirect(reverse('account.views.profile'))
+        return HttpResponseRedirect(reverse('profile'))
 
     return render(request, 'account_deleteapikey.html', {'key': key})
 
@@ -110,7 +109,7 @@ def ldap_password_change(request,
     import ldap
 
     if post_change_redirect is None:
-        post_change_redirect = reverse('account.views.rattic_change_password_done')
+        post_change_redirect = reverse('rattic_change_password_done')
     if request.method == "POST":
         form = password_change_form(user=request.user, data=request.POST)
         if form.is_valid():
@@ -135,12 +134,12 @@ def ldap_password_change(request,
 
 class RatticSessionDeleteView(SessionDeleteView):
     def get_success_url(self):
-        return reverse('account.views.profile')
+        return reverse('profile')
 
 
 class RatticTFADisableView(DisableView):
     template_name = 'account_tfa_disable.html'
-    redirect_url = 'account.views.profile'
+    redirect_url = 'profile'
 
 
 class RatticTFABackupTokensView(BackupTokensView):
@@ -151,7 +150,7 @@ class RatticTFABackupTokensView(BackupTokensView):
 class RatticTFASetupView(SetupView):
     template_name = 'account_tfa_setup.html'
     qrcode_url = 'tfa_qr'
-    redirect_url = 'account.views.profile'
+    redirect_url = 'profile'
 
 
 class RatticTFALoginView(LoginView):

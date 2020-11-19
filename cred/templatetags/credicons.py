@@ -22,6 +22,7 @@ def cred_icon(iconname, txtfield=None, imgfield=None, tagid=None):
 
     # Get the URL for the blank image (goes in the href)
     blankimg = settings.STATIC_URL + settings.CRED_ICON_CLEAR
+    #blankimg = "{% static 'rattic/img/rattic/img/clear.gif' %}"
 
     # What CSS classes does our icon need
     classes = ['rattic-icon', data['css-class']]

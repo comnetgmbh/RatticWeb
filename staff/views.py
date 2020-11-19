@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, Http404
 from django.views.generic.edit import UpdateView, FormView
 from django.utils.decorators import method_decorator
@@ -17,11 +17,11 @@ from django.utils.timezone import utc
 from cred.icon import get_icon_list
 from cred.models import CredAudit, Cred, Tag
 from cred.forms import CredForm
-from models import UserForm, GroupForm, KeepassImportForm, AuditFilterForm
-from decorators import rattic_staff_required
+from .models import UserForm, GroupForm, KeepassImportForm, AuditFilterForm
+from .decorators import rattic_staff_required
 
 
-@rattic_staff_required
+#@rattic_staff_required
 def home(request):
     userlist = User.objects.all()
     grouplist = Group.objects.all()
@@ -40,7 +40,7 @@ def userdetail(request, uid):
             return HttpResponseRedirect(reverse('cred.views.list',
                 args=('changeadvice', user.id)))
     credlogs = CredAudit.objects.filter(user=user, cred__group__in=request.user.groups.all())[:5]
-    morelink = reverse('staff.views.audit', args=('user', user.id))
+    morelink = reverse('audit', args=('user', user.id))
     return render(request, 'staff_userdetail.html', {
         'viewuser': user,
         'credlogs': credlogs,
@@ -55,7 +55,7 @@ def groupadd(request):
         if form.is_valid():
             form.save()
             request.user.groups.add(form.instance)
-            return HttpResponseRedirect(reverse('staff.views.home'))
+            return HttpResponseRedirect(reverse('home'))
     else:
         form = GroupForm()
 
@@ -75,7 +75,7 @@ def groupedit(request, gid):
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('staff.views.home'))
+            return HttpResponseRedirect(reverse('home'))
     else:
         form = GroupForm(instance=group)
 
@@ -87,7 +87,7 @@ def groupdelete(request, gid):
     group = get_object_or_404(Group, pk=gid)
     if request.method == 'POST':
         group.delete()
-        return HttpResponseRedirect(reverse('staff.views.home'))
+        return HttpResponseRedirect(reverse('home'))
     return render(request, 'staff_groupdetail.html', {'group': group, 'delete': True})
 
 
@@ -96,7 +96,7 @@ def userdelete(request, uid):
     user = get_object_or_404(User, pk=uid)
     if request.method == 'POST':
         user.delete()
-        return HttpResponseRedirect(reverse('staff.views.home'))
+        return HttpResponseRedirect(reverse('home'))
     return render(request, 'staff_userdetail.html', {'viewuser': user, 'delete': True})
 
 
@@ -150,7 +150,7 @@ def audit(request, by, byarg):
 class NewUser(FormView):
     form_class = UserForm
     template_name = 'staff_useredit.html'
-    success_url = reverse_lazy('staff.views.home')
+    success_url = reverse_lazy('home')
 
     # Staff access only
     @method_decorator(rattic_staff_required)
@@ -169,7 +169,7 @@ class UpdateUser(UpdateView):
     model = User
     form_class = UserForm
     template_name = 'staff_useredit.html'
-    success_url = reverse_lazy('staff.views.home')
+    success_url = reverse_lazy('home')
 
     # Staff access only
     @method_decorator(rattic_staff_required)
@@ -214,7 +214,7 @@ def upload_keepass(request):
             request.session['imported_data'] = data
 
             # Start the user processing entries
-            return HttpResponseRedirect(reverse('staff.views.import_overview'))
+            return HttpResponseRedirect(reverse('import_overview'))
     else:
         form = KeepassImportForm(request.user)
     return render(request, 'staff_keepassimport.html', {'form': form})
@@ -233,7 +233,7 @@ def import_overview(request):
     if len(entries) == 0:
         del request.session['imported_data']
         request.session.save()
-        return HttpResponseRedirect(reverse('staff.views.home'))
+        return HttpResponseRedirect(reverse('home'))
 
     return render(request, 'staff_import_overview.html', {
         'entries': entries,
@@ -253,7 +253,7 @@ def import_ignore(request, import_id):
     except IndexError:
         raise Http404
 
-    return HttpResponseRedirect(reverse('staff.views.import_overview'))
+    return HttpResponseRedirect(reverse('import_overview'))
 
 
 @rattic_staff_required
@@ -305,7 +305,7 @@ def import_process(request, import_id):
             request.session.save()
 
             # Go back to the overview
-            return HttpResponseRedirect(reverse('staff.views.import_overview'))
+            return HttpResponseRedirect(reverse('import_overview'))
 
     else:
         # Init the cred, and create the form
@@ -358,11 +358,11 @@ def credundelete(request, cred_id):
         CredAudit(audittype=CredAudit.CREDADD, cred=cred, user=request.user).save()
         cred.is_deleted = False
         cred.save()
-        return HttpResponseRedirect(reverse('cred.views.list', args=('special', 'trash')))
+        return HttpResponseRedirect(reverse('cred:list2', args=('special', 'trash')))
 
     CredAudit(audittype=CredAudit.CREDVIEW, cred=cred, user=request.user).save()
 
-    return render(request, 'cred_detail.html', {'cred': cred, 'lastchange': lastchange, 'action': reverse('cred.views.delete', args=(cred_id,)), 'undelete': True})
+    return render(request, 'cred_detail.html', {'cred': cred, 'lastchange': lastchange, 'action': reverse('cred:delete', args=(cred_id,)), 'undelete': True})
 
 
 @rattic_staff_required
@@ -381,4 +381,4 @@ def removetoken(request, uid):
         dev.delete()
 
     # Redirect to the users detail page
-    return HttpResponseRedirect(reverse('staff.views.userdetail', args=(uid,)))
+    return HttpResponseRedirect(reverse('userdetail', args=(uid,)))
